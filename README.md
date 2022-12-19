@@ -43,6 +43,89 @@ We can summarise the process as follows:
 
 # How to setup Certificate Vending Machine
 
+###### Clone the repository
+
+```
+git clone <Repository URL>
+```
+###### Browse to the directory and install all the dependencies
+
+```
+cd aws-iot-device-bootstrap-certificate-vending-machine
+npm install
+```
+
+Bootstrap the CDK 
+
+
+###### Synthesize an AWS CloudFormation template for the app, as follows.
+if your app contained more than one stack, you'd need to specify which stack or stacks to synthesize. But since it only contains one, the CDK Toolkit knows you must mean that one.
+The cdk synth command executes your app, which causes the resources defined in it to be translated into an AWS CloudFormation template. The displayed output of cdk synth is a YAML-format template. The template is also saved in the cdk.out directory in JSON format.
+
+```
+cdk synth
+```
+
+###### Deploy the stack
+To deploy the stack using AWS CloudFormation, use:
+
+```
+cdk deploy
+```
+As with cdk synth, you don't need to specify the name of the stack since there's only one in the app.
+
+This will deploy the Certificate Vending Machine setup to your account. The output of the stack is the API endpoint. Note the API endpoint, we will use that for testing.
+
+###### Modifying the app (optional)
+In case you do any changes to the code after the deployment. If you want to look at the changes use cdk diff command
+
+```
+cdk diff
+```
+
+then you can deploy again 
+
+```
+cdk deploy
+```
+
+###### Testing Certificate Vending Machine
+
+As part of device manufacturing process, device manufacturer will Update the device token to Dynamodb table. 
+In order to simulate that, you can generate SHA256 of deviceId with salt
+Open Resources -> generateDeviceToken.js and update the deviceId and Salt then run below command
+
+```
+cd resources
+node generateDeviceToken.js
+```
+This will print the device token.
+Update the device information to the DeviceProvisioningInfo Table
+
+```
+{
+    "device_uid": "<deviceId>",
+    "device_token": "<device Token from above step>",
+    "is_enabled": "1",
+    "is_registered": "0"
+}
+
+```
+
+Trigger device bootstrapping, by invoking the registration API.
+
+```
+curl -d {\"device_uid\":\"<deviceId as in step above>\",\"device_token\":\"<device token as in step above>\"} -H "Content-Type: application/json" -X POST <Stack API endpoint output>/registration
+```
+
+This will setup the device in AWS IOT and return the required certificates and keys to be stored on the device to communicate with AWS IOT
+
+The response indicates that the device has been successfully registered and contains the connection information and certificates. This response is only available once so make sure that you saved the HTTP response. Later requests will responded as device is already registered.
+
+Check the DynamoDB record to see the device’s updated info.
+
+Device is registered to AWS IoT Core using certificate vending machine method. You can navigate to AWS IoT Core Console to see the newly created IoT thing and its attached resources.
+
 
 # Reference
 [https://iotatlas.net/en/implementations/aws/device_bootstrap/aws-iot-certificate-vending-machine/](https://iotatlas.net/en/implementations/aws/device_bootstrap/aws-iot-certificate-vending-machine/)
