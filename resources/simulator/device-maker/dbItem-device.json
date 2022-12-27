@@ -1,0 +1,14 @@
+{
+    "device_uid": {
+      "S": "DEVICE_ID"
+    },
+    "device_token": {
+      "S": ""
+    },
+    "is_enabled": {
+      "S": "1"
+    },
+    "is_registered": {
+      "N": "0"
+    }
+  }

@@ -17,37 +17,33 @@ export class AwsIotDeviceBootstrapCertificateVendingMachineStack extends cdk.Sta
       "Statement": [
         {
           "Effect": "Allow",
-          "Action": [
-            "iot:Connect"
-          ],
-          "Resource": [
-            "*"
-          ],
-          "Condition": {
-            "Bool": {
-              "iot:Connection.Thing.IsAttached": [
-                "true"
-              ]
-            }
-          }
+          "Action": "iot:Connect",
+          "Resource": "*"
         },
         {
           "Effect": "Allow",
-          "Action": [
-            "iot:Subscribe"
-          ],
+          "Action": "iot:Subscribe",
           "Resource": [
-            "arn:aws:iot:*:*:topicfilter/comm/${iot:Connection.Thing.ThingName}"
+            "arn:aws:iot:*:*:topicfilter/comm/${iot:Connection.Thing.ThingName}",
+            "arn:aws:iot:eu-west-1:124346920228:topicfilter/sdk/test/java",
+            "arn:aws:iot:eu-west-1:124346920228:topicfilter/sdk/test/Python",
+            "arn:aws:iot:eu-west-1:124346920228:topicfilter/topic_1",
+            "arn:aws:iot:eu-west-1:124346920228:topicfilter/topic_2"
           ]
         },
         {
           "Effect": "Allow",
           "Action": [
             "iot:Receive",
-            "iot:Publish"
+            "iot:Publish",
+            "iot:RetainPublish"
           ],
           "Resource": [
-            "arn:aws:iot:*:*:topic/comm/${iot:Connection.Thing.ThingName}"
+            "arn:aws:iot:*:*:topic/comm/${iot:Connection.Thing.ThingName}",
+            "arn:aws:iot:eu-west-1:124346920228:topic/sdk/test/java",
+            "arn:aws:iot:eu-west-1:124346920228:topic/sdk/test/Python",
+            "arn:aws:iot:eu-west-1:124346920228:topic/topic_1",
+            "arn:aws:iot:eu-west-1:124346920228:topic/topic_2"
           ]
         }
       ]
@@ -116,7 +112,7 @@ export class AwsIotDeviceBootstrapCertificateVendingMachineStack extends cdk.Sta
         iot_root_ca_url: 'https://www.amazontrust.com/repository/AmazonRootCA1.pem',
         region: process.env.CDK_DEPLOY_REGION || process.env.CDK_DEFAULT_REGION || '',
         thing_name_format: 'thing_%DEVICE_UID%',
-        iot_policy_name: iotPolicy.policyName || ''
+        iot_policy_name: iotPolicy.attrId || ''
       }
     });
 

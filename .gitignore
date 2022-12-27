@@ -1,4 +1,3 @@
-*.js
 !jest.config.js
 !generateDeviceToken.js
 *.d.ts
@@ -7,3 +6,10 @@ node_modules
 # CDK asset staging directory
 .cdk.staging
 cdk.out
+
+#certificates
+certs/
+
+#device Properties
+device.properties
+iot.properties

@@ -1,0 +1,2 @@
+
+aws dynamodb put-item --table-name AwsIotDeviceBootstrapCertificateVendingMachineStack-DeviceProvisioningInfoDBD321976C-1DDS3WTPMM2E --item file://dbItem-device.json --return-consumed-capacity TOTAL --profile 124346920228_AWSAdministratorAccess
