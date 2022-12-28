@@ -43,10 +43,14 @@ We can summarise the process as follows:
 
 # How to setup Certificate Vending Machine
 
+###### Prerequisites
+
+Make sure that [AWS CDK prerequisites](https://docs.aws.amazon.com/cdk/v2/guide/work-with.html) are setup
+
 ###### Clone the repository
 
 ```
-git clone <Repository URL>
+git clone https://github.com/alokve/aws-iot-device-bootstrap-certificate-vending-machine.git
 ```
 ###### Browse to the directory and install all the dependencies
 
@@ -55,11 +59,16 @@ cd aws-iot-device-bootstrap-certificate-vending-machine
 npm install
 ```
 
-Bootstrap the CDK 
+###### Bootstrap the CDK (if you are using CDK with AWS enviornment for the first time)
+Bootstrapping is the process of provisioning resources for the AWS CDK before you can deploy AWS CDK apps into an AWS environment. (An AWS environment is a combination of an AWS account and Region).
+
+```
+cdk bootstrap
+```
 
 
 ###### Synthesize an AWS CloudFormation template for the app, as follows.
-if your app contained more than one stack, you'd need to specify which stack or stacks to synthesize. But since it only contains one, the CDK Toolkit knows you must mean that one.
+if your app contained more than one stack, you'd need to specify which stack or stacks to synthesize. Since this repository contains one, the CDK Toolkit knows you must mean that one.
 The cdk synth command executes your app, which causes the resources defined in it to be translated into an AWS CloudFormation template. The displayed output of cdk synth is a YAML-format template. The template is also saved in the cdk.out directory in JSON format.
 
 ```
@@ -91,16 +100,17 @@ cdk deploy
 
 ###### Testing Certificate Vending Machine
 
+###### 1. Device Manufacturer
 As part of device manufacturing process, device manufacturer will Update the device token to Dynamodb table. 
 In order to simulate that, you can generate SHA256 of deviceId with salt
-Open Resources -> generateDeviceToken.js and update the deviceId and Salt then run below command
+Open resources\simulator\device-maker\calculate-devicetoken.js file and update the deviceId and salt then run below command
 
 ```
-cd resources
-node generateDeviceToken.js
+cd .\resources\simulator\device-maker\
+node calculate-devicetoken.js
 ```
 This will print the device token.
-Update the device information to the DeviceProvisioningInfo Table
+Update the device information to the DeviceProvisioningInfoDB Table created as part of CVM CloudFormation template deployed in above step. Open your AWS account and browse to CloudFormation and get the dynamodb table name from resource section of the template. Update the device info to the the database.
 
 ```
 {
@@ -111,16 +121,30 @@ Update the device information to the DeviceProvisioningInfo Table
 }
 
 ```
+###### 2. Device Bootstrapping
+
+Option 1: 
 
 Trigger device bootstrapping, by invoking the registration API.
 
 ```
 curl -d {\"device_uid\":\"<deviceId as in step above>\",\"device_token\":\"<device token as in step above>\"} -H "Content-Type: application/json" -X POST <Stack API endpoint output>/registration
 ```
+Option 2: (simulate the device)
+
+Browse to resouces\simulator\device\
+Copy the content from device_sample.properties and create new file device.properties. Update the variables in the file.
+Run below command to run device startup script
+```
+cd ..\device\
+.\start.ps1
+```
 
 This will setup the device in AWS IOT and return the required certificates and keys to be stored on the device to communicate with AWS IOT
 
 The response indicates that the device has been successfully registered and contains the connection information and certificates. This response is only available once so make sure that you saved the HTTP response. Later requests will responded as device is already registered.
+
+Certificate, private key and the IOT endopoint returned by API response is saved on the device and used to connect / communicate with the AWS IOT to enable the device features.
 
 Check the DynamoDB record to see the device’s updated info.
 
