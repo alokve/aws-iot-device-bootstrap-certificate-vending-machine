@@ -25,10 +25,10 @@ export class AwsIotDeviceBootstrapCertificateVendingMachineStack extends cdk.Sta
           "Action": "iot:Subscribe",
           "Resource": [
             "arn:aws:iot:*:*:topicfilter/comm/${iot:Connection.Thing.ThingName}",
-            "arn:aws:iot:eu-west-1:124346920228:topicfilter/sdk/test/java",
-            "arn:aws:iot:eu-west-1:124346920228:topicfilter/sdk/test/Python",
-            "arn:aws:iot:eu-west-1:124346920228:topicfilter/topic_1",
-            "arn:aws:iot:eu-west-1:124346920228:topicfilter/topic_2"
+            "arn:aws:iot:*:*:topicfilter/sdk/test/java",
+            "arn:aws:iot:*:*:topicfilter/sdk/test/Python",
+            "arn:aws:iot:*:*:topicfilter/topic_1",
+            "arn:aws:iot:*:*:topicfilter/topic_2"
           ]
         },
         {
@@ -40,10 +40,10 @@ export class AwsIotDeviceBootstrapCertificateVendingMachineStack extends cdk.Sta
           ],
           "Resource": [
             "arn:aws:iot:*:*:topic/comm/${iot:Connection.Thing.ThingName}",
-            "arn:aws:iot:eu-west-1:124346920228:topic/sdk/test/java",
-            "arn:aws:iot:eu-west-1:124346920228:topic/sdk/test/Python",
-            "arn:aws:iot:eu-west-1:124346920228:topic/topic_1",
-            "arn:aws:iot:eu-west-1:124346920228:topic/topic_2"
+            "arn:aws:iot:*:*:topic/sdk/test/java",
+            "arn:aws:iot:*:*:topic/sdk/test/Python",
+            "arn:aws:iot:*:*:topic/topic_1",
+            "arn:aws:iot:*:*:topic/topic_2"
           ]
         }
       ]
